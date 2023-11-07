@@ -308,3 +308,52 @@ private:
 
 	int _size;
 };
+
+template <>
+UniqueSet<std::string>::UniqueSet(int size, std::string begin, std::string end) : _size(size), _data(new std::string[size])
+{
+	int asc_start = begin[0];
+	int asc_end = end[0];
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	std::uniform_int_distribution<> dis(asc_start, asc_end);
+	for (int i = 0; i < _size; i++)
+	{
+		char* word = new char[6]();
+		for (int j = 0; j < 5; j++)
+		{
+			word[j] = dis(gen);
+		}
+		word[6] = '\n';
+		_data[i] = std::string(word);
+	}
+}
+
+template <>
+UniqueSet<std::pair<int, double>>::UniqueSet(int size, std::pair<int, double> begin, std::pair<int, double> end) : _size(size), _data(new std::pair<int, double>[size])
+{
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	std::uniform_real_distribution<> dis_first(begin.first, end.first);
+	std::uniform_real_distribution<> dis_second(begin.second, end.second);
+	for (int i = 0; i < size; i++)
+	{
+		_data[i] = std::make_pair(dis_first(gen), dis_second(gen));
+	}
+}
+
+template<typename T, typename R>
+std::ostream& operator<<(std::ostream& os, std::pair<T, R>& pair) {
+	std::cout << "(" << pair.first << ", " << pair.second << ")";
+	return os;
+}
+
+template<typename T>
+std::ostream& operator<<(std::ostream& os, UniqueSet<T>& set) {
+	for (size_t i = 0; i < set.get_size(); i++)
+	{
+		std::cout << set[i] << " ";
+		if (i == 9) std::cout << "\n";
+	}
+	return os;
+}
